@@ -40,7 +40,7 @@ namespace Lab10
                     }
                 }
             }
-            
+
         }
 
         //method for viewing all customers and selecting one for more info and order info
@@ -49,7 +49,7 @@ namespace Lab10
             Console.WriteLine("1. List A-Z");
             Console.WriteLine("2. List Z-A");
             int listOrder = int.Parse(Console.ReadLine());
-            
+
             if (listOrder == 2)
             {
                 var customerList = context.Customers
@@ -75,39 +75,39 @@ namespace Lab10
                     Console.WriteLine($"{c}. Name: {customer.CompanyName}, Country: {customer.Country}, Region: {customer.Region}, Phone: {customer.Phone}, Orders: {customer.OrderCount}");
                 };
             }
+            // här börjar delen för att se all info för specifik kund
+            Console.WriteLine();
+            string customerSelect;
+            Console.Write("Enter customer name to view more information: ");
+            customerSelect = (Console.ReadLine());
+            Console.Clear();
+            var customerSelection = context.Customers
+                .Where(cs => cs.CompanyName == customerSelect)
+                .Select(cs => new { cs.CompanyName, cs.ContactName, cs.ContactTitle, cs.Address, cs.City, cs.Country, cs.Region, cs.PostalCode, cs.Phone, cs.Fax })
+                .ToList();
+            foreach (var cs in customerSelection)
+            {
+                Console.WriteLine(
+                    $" Name: {cs.CompanyName}," +
+                    $" Contact: {cs.ContactName}, {cs.ContactTitle}" +
+                    $" Country: {cs.Country}," +
+                    $" Region: {cs.Region}," +
+                    $" City: {cs.City}," +
+                    $" Address: {cs.Address}, {cs.PostalCode}" +
+                    $" Phone: {cs.Phone}," +
+                    $" Fax: {cs.Fax},");
 
-                Console.WriteLine();
-                string customerSelect;
-                Console.Write("Enter customer name to view more information: ");
-                customerSelect = (Console.ReadLine());
-                Console.Clear();
-                var customerSelection = context.Customers
-                    .Where(cs => cs.CompanyName == customerSelect)
-                    .Select(cs => new { cs.CompanyName, cs.ContactName, cs.ContactTitle, cs.Address, cs.City, cs.Country, cs.Region, cs.PostalCode, cs.Phone, cs.Fax })
-                    .ToList();
-                foreach (var cs in customerSelection)
-                {
-                    Console.WriteLine(
-                        $" Name: {cs.CompanyName}," +
-                        $" Contact: {cs.ContactName}, {cs.ContactTitle}" +
-                        $" Country: {cs.Country}," +
-                        $" Region: {cs.Region}," +
-                        $" City: {cs.City}," +
-                        $" Address: {cs.Address}, {cs.PostalCode}" +
-                        $" Phone: {cs.Phone}," +
-                        $" Fax: {cs.Fax},");
-                    
-                }
-                var customerOrders = context.Customers
-                    .Where(cs => cs.CompanyName == customerSelect)
-                    .Include(cs => cs.Orders)
-                    .Single()
-                    .Orders
-                    .ToList();
-                foreach (var cs in customerOrders)
-                {
-                    Console.WriteLine($"OrderID: {cs.OrderId} Order Date: {cs.OrderDate}");
-                }
+            }
+            var customerOrders = context.Customers
+                .Where(cs => cs.CompanyName == customerSelect)
+                .Include(cs => cs.Orders)
+                .Single()
+                .Orders
+                .ToList();
+            foreach (var cs in customerOrders)
+            {
+                Console.WriteLine($"OrderID: {cs.OrderId} Order Date: {cs.OrderDate}");
+            }
 
             Console.WriteLine();
         }
@@ -115,7 +115,7 @@ namespace Lab10
         //method for adding a customer
         static void AddCustomer(NorthwindContext context)
         {
-             
+
             Console.WriteLine("Please enter company name of the new customer:");
             string companyName = Console.ReadLine();
 
@@ -137,34 +137,44 @@ namespace Lab10
                     customerID += randomChar;
                 }
             }
-            
+
             Console.Write("Enter the name of the contactperson: ");
-            string contactName = Console.ReadLine();
+            string contactName = Console.ReadLine()?.Trim(); //tar bort mellanrum både före, efter texten och ifall det är endast mellanrum
+            contactName = string.IsNullOrEmpty(contactName) ? null : contactName; // ifall det är tomt blir det null
 
             Console.Write("Enter the title of the contact person: ");
-            string contactTitle = Console.ReadLine();
+            string contactTitle = Console.ReadLine()?.Trim();
+            contactTitle = string.IsNullOrEmpty(contactTitle) ? null : contactTitle;
 
             Console.Write("Enter country: ");
-            string country = Console.ReadLine();
+            string country = Console.ReadLine()?.Trim();
+            country = string.IsNullOrEmpty(country) ? null : country;
 
             Console.Write("Enter region: ");
-            string region = Console.ReadLine();
+            string region = Console.ReadLine()?.Trim();
+            region = string.IsNullOrEmpty(region) ? null : region;
 
             Console.Write("Enter city: ");
-            string city = Console.ReadLine();
+            string city = Console.ReadLine()?.Trim();
+            city = string.IsNullOrEmpty(city) ? null : city;
 
             Console.Write("Enter postal code: ");
-            string postalCode = Console.ReadLine();
+            string postalCode = Console.ReadLine()?.Trim();
+            postalCode = string.IsNullOrEmpty(postalCode) ? null : postalCode;
 
             Console.Write("Enter address: ");
-            string address = Console.ReadLine();
+            string address = Console.ReadLine()?.Trim();
+            address = string.IsNullOrEmpty(address) ? null : address;
 
             Console.Write("Enter phone number: ");
-            string phoneNumber = Console.ReadLine();
+            string phoneNumber = Console.ReadLine()?.Trim();
+            phoneNumber = string.IsNullOrEmpty(phoneNumber) ? null : phoneNumber;
 
             Console.Write("Enter fax number: ");
-            string faxNumber = Console.ReadLine();
+            string faxNumber = Console.ReadLine()?.Trim();
+            faxNumber = string.IsNullOrEmpty(faxNumber) ? null : faxNumber;
 
+            //skapar ny kund med all ifylld data
             Customer customer = new Customer()
             {
 
@@ -187,5 +197,7 @@ namespace Lab10
         }
     }
 }
+
+
 
                     
